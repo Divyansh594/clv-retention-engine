@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pkl
+*.joblib
+models/*.pkl
+data/*.xlsx
+.env
+.DS_Store
+venv/
+.idea/
+*.egg-info/
+dist/
+build/
