@@ -123,7 +123,19 @@ clv-retention-engine/
 
 ## 📸 Screenshots
 
-_(Add screenshots of dashboard here after running)_
+<img width="1843" height="1071" alt="image" src="https://github.com/user-attachments/assets/e74f3a22-dade-4177-98c5-3a6373508275" />
+<img width="1428" height="769" alt="image" src="https://github.com/user-attachments/assets/36039c9d-cc5b-41a9-a8b5-d374e8cfe4f6" />
+<img width="1431" height="791" alt="image" src="https://github.com/user-attachments/assets/87262fae-f160-449a-a5ef-5a028fc21290" />
+<img width="1409" height="626" alt="image" src="https://github.com/user-attachments/assets/4523fdc0-46b8-4483-b488-0ce13f8446fe" />
+<img width="1425" height="919" alt="image" src="https://github.com/user-attachments/assets/7eedd9e3-b330-4296-b31d-ca21edc9ffb6" />
+<img width="1434" height="876" alt="image" src="https://github.com/user-attachments/assets/8f18e5c5-f3d8-4419-80d8-d37b710428f4" />
+<img width="1403" height="617" alt="image" src="https://github.com/user-attachments/assets/6d9d01cf-4352-49d9-9e80-fd516a444ace" />
+<img width="1425" height="683" alt="image" src="https://github.com/user-attachments/assets/e91e1936-2b64-4590-ba84-58e531af3d99" />
+<img width="1426" height="683" alt="image" src="https://github.com/user-attachments/assets/bd6a1a3a-5fdb-44fc-ad4e-c03684a3c1b8" />
+<img width="1429" height="947" alt="image" src="https://github.com/user-attachments/assets/a73dd978-04ae-46c6-8da7-a6e1c976bf3f" />
+<img width="1424" height="961" alt="image" src="https://github.com/user-attachments/assets/83548722-f0c1-4e6b-b9cf-4d5fa2e045e0" />
+
+
 
 ---
 
