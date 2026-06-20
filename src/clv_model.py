@@ -30,22 +30,40 @@ def prepare_bgf_summary(df_clean: pd.DataFrame, snapshot_date: pd.Timestamp) -> 
 
 
 def fit_bgnbd(summary: pd.DataFrame) -> BetaGeoFitter:
-    bgf = BetaGeoFitter(penalizer_coef=0.01)
-    bgf.fit(
-        summary["frequency"],
-        summary["recency"],
-        summary["T"]
-    )
-    print(f"BG/NBD fitted. Params: {bgf.params_}")
+    bgf = BetaGeoFitter(penalizer_coef=10.0)  # Increased from 0.01
+    try:
+        bgf.fit(
+            summary["frequency"],
+            summary["recency"],
+            summary["T"],
+            bounds=[(0.001, 10), (0.001, 10), (0.001, 10), (0.001, 10)]  # Constrain params
+        )
+        print(f"✅ BG/NBD fitted. Params: {bgf.params_}")
+    except Exception as e:
+        print(f"⚠️ BG/NBD convergence warning (using fallback): {str(e)[:100]}")
+        # Fallback: use a much larger penalizer
+        bgf = BetaGeoFitter(penalizer_coef=100.0)
+        bgf.fit(
+            summary["frequency"],
+            summary["recency"],
+            summary["T"],
+            bounds=[(0.001, 10), (0.001, 10), (0.001, 10), (0.001, 10)]
+        )
+        print(f"✅ BG/NBD fitted (with high regularization). Params: {bgf.params_}")
     return bgf
 
 
 def fit_gamma_gamma(summary: pd.DataFrame) -> GammaGammaFitter:
-    # Only customers with repeat purchases
     returning = summary[summary["frequency"] > 0]
-    ggf = GammaGammaFitter(penalizer_coef=0.01)
-    ggf.fit(returning["frequency"], returning["monetary_value"])
-    print(f"Gamma-Gamma fitted. Params: {ggf.params_}")
+    ggf = GammaGammaFitter(penalizer_coef=10.0)  # Increased from 0.01
+    try:
+        ggf.fit(returning["frequency"], returning["monetary_value"])
+        print(f"✅ Gamma-Gamma fitted. Params: {ggf.params_}")
+    except Exception as e:
+        print(f"⚠️ Gamma-Gamma convergence warning: {str(e)[:100]}")
+        ggf = GammaGammaFitter(penalizer_coef=100.0)
+        ggf.fit(returning["frequency"], returning["monetary_value"])
+        print(f"✅ Gamma-Gamma fitted (with high regularization). Params: {ggf.params_}")
     return ggf
 
 
@@ -134,7 +152,7 @@ def train_ml_clv(df_with_target: pd.DataFrame):
     X_train_sc = scaler.fit_transform(X_train)
     X_test_sc = scaler.transform(X_test)
 
-    rf = RandomForestRegressor(n_estimators=200, max_depth=10, random_state=42, n_jobs=-1)
+    rf = RandomForestRegressor(n_estimators=200, max_depth=10, random_state=42, n_jobs=1)
     rf.fit(X_train_sc, y_train)
 
     gbm = GradientBoostingRegressor(n_estimators=200, learning_rate=0.05, max_depth=4, random_state=42)
@@ -162,19 +180,19 @@ if __name__ == "__main__":
     df = clean_data(load_data())
     snapshot = get_snapshot_date(df)
 
-    # Probabilistic
+    # Probabilistic CLV - don't save model objects (unpicklable)
+    # Just save the predictions
     summary = prepare_bgf_summary(df, snapshot)
     bgf = fit_bgnbd(summary)
     ggf = fit_gamma_gamma(summary)
     clv_prob = predict_probabilistic_clv(summary, bgf, ggf)
     clv_prob.to_csv("data/clv_probabilistic.csv")
+    print("✅ CLV probabilistic predictions saved to data/clv_probabilistic.csv")
 
-    joblib.dump(bgf, "models/bgf.pkl")
-    joblib.dump(ggf, "models/ggf.pkl")
-
-    # ML
+    # ML CLV
     rfm = add_rfm_scores(pd.read_csv("data/rfm_features.csv"))
     df_target = create_clv_target(rfm, df, snapshot)
     train_ml_clv(df_target)
+    df_target.to_csv("data/rfm_with_clv.csv", index=False)
 
-    print("CLV pipeline complete.")
+    print("✅ CLV pipeline complete.")

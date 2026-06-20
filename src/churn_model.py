@@ -51,7 +51,7 @@ def train_churn_models(rfm_with_churn: pd.DataFrame):
     print(classification_report(y_test, (lr_preds > 0.5).astype(int)))
 
     # ── Random Forest ──
-    rf = RandomForestClassifier(n_estimators=200, max_depth=8, random_state=42, n_jobs=-1)
+    rf = RandomForestClassifier(n_estimators=200, max_depth=8, random_state=42, n_jobs=1)
     rf.fit(X_train_sc, y_train)
     rf_preds = rf.predict_proba(X_test_sc)[:, 1]
     print(f"Random Forest — AUC: {roc_auc_score(y_test, rf_preds):.3f}")

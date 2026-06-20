@@ -37,8 +37,6 @@ bgf = fit_bgnbd(summary)
 ggf = fit_gamma_gamma(summary)
 clv_prob = predict_probabilistic_clv(summary, bgf, ggf)
 clv_prob.to_csv("data/clv_probabilistic.csv")
-joblib.dump(bgf, "models/bgf.pkl")
-joblib.dump(ggf, "models/ggf.pkl")
 
 df_target = create_clv_target(rfm, df, snapshot)
 train_ml_clv(df_target)
